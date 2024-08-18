@@ -16,7 +16,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.cursee.examplemod.ExampleModFabric"
+            "com.cursee.peaceful_hunger.PeacefulHungerFabric"
         ]
     },
     "mixins": [
