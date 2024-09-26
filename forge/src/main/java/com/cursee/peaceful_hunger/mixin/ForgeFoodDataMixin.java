@@ -8,11 +8,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+// if (instance.getDifficulty() == Difficulty.PEACEFUL) return Difficulty.HARD;
+// return instance.getDifficulty();
+
 @Mixin(FoodData.class)
 public class ForgeFoodDataMixin {
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getDifficulty()Lnet/minecraft/world/Difficulty;"))
-    private Difficulty injected(Level instance) {
+    private Difficulty injected1(Level instance) {
         return Difficulty.HARD;
     }
 
