@@ -1,5 +1,6 @@
 package com.cursee.peaceful_hunger.mixin;
 
+import com.cursee.peaceful_hunger.PeacefulHunger;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
@@ -14,16 +15,27 @@ public class FabricPlayerMixin {
 
     @Redirect(method = "aiStep", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/Level;getDifficulty()Lnet/minecraft/world/Difficulty;"))
     private Difficulty injected1() {
-        return Difficulty.HARD;
+
+        Player player = (Player) (Object) this;
+
+        if (PeacefulHunger.enabled && player.level().getDifficulty() == Difficulty.PEACEFUL) return Difficulty.HARD;
+
+        return player.level().getDifficulty();
     }
 
     @Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/GameRules;getBoolean(Lnet/minecraft/world/level/GameRules$Key;)Z"))
     private boolean injected2(GameRules instance, GameRules.Key<GameRules.BooleanValue> $$0) {
-        return false;
+
+        if (PeacefulHunger.enabled && PeacefulHunger.disable_natural_regeneration && instance.getBoolean(GameRules.RULE_NATURAL_REGENERATION)) return false;
+
+        return instance.getBoolean(GameRules.RULE_NATURAL_REGENERATION);
     }
 
     @Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;needsFood()Z"))
     private boolean injected3(FoodData instance) {
-        return true;
+
+        if (PeacefulHunger.enabled && !instance.needsFood()) return true;
+
+        return instance.needsFood();
     }
 }
