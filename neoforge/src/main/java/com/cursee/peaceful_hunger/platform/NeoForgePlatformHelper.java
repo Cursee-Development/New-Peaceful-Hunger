@@ -4,6 +4,8 @@ import com.cursee.peaceful_hunger.platform.services.IPlatformHelper;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 
+import java.nio.file.Path;
+
 public class NeoForgePlatformHelper implements IPlatformHelper {
 
     @Override
@@ -22,5 +24,10 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     public boolean isDevelopmentEnvironment() {
 
         return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public Path getGameDirectory() {
+        return FMLLoader.getGamePath();
     }
 }
