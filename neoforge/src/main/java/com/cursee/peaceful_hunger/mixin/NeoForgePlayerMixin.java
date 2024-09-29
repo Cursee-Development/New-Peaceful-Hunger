@@ -1,9 +1,9 @@
 package com.cursee.peaceful_hunger.mixin;
 
+import com.cursee.peaceful_hunger.PeacefulHunger;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodData;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -11,18 +11,19 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(Player.class)
 public class NeoForgePlayerMixin {
 
-    @Redirect(method = "aiStep", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/Level;getDifficulty()Lnet/minecraft/world/Difficulty;"))
-    private Difficulty injected1() {
-        return Difficulty.HARD;
+    @Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getDifficulty()Lnet/minecraft/world/Difficulty;"))
+    private Difficulty FabricPlayerMixin$getDifficulty(Level instance) {
+
+        if (PeacefulHunger.enabled && instance.getDifficulty() == Difficulty.PEACEFUL) return Difficulty.HARD;
+
+        return instance.getDifficulty();
     }
 
-    @Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/GameRules;getBoolean(Lnet/minecraft/world/level/GameRules$Key;)Z"))
-    private boolean injected2(GameRules instance, GameRules.Key<GameRules.BooleanValue> $$0) {
-        return false;
-    }
-
-    @Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;needsFood()Z"))
-    private boolean injected3(FoodData instance) {
-        return true;
-    }
+//    @Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;needsFood()Z"))
+//    private boolean injected3(FoodData instance) {
+//
+//        if (PeacefulHunger.enabled && !instance.needsFood()) return true;
+//
+//        return instance.needsFood();
+//    }
 }
